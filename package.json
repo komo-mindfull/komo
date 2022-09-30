@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/comfortaa": "^4.5.9",
     "@headlessui/react": "^1.7.2",
     "daisyui": "^2.31.0",
     "next": "12.3.1",
