@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FC } from "react";
 import { useQuery } from "react-query";
 
@@ -10,36 +10,83 @@ enum Gender {
   others,
 }
 
+interface FormData {
+  name: string;
+  age: number;
+  gender: Gender;
+}
+
 const Customer: NextPage = () => {
   const router = useRouter();
-  const { isLoading, error, data } = useQuery("repoData", () =>
-    fetch("https://api.github.com/repos/tannerlinsley/react-query").then(
-      (res) => res.json()
-    )
+  const [formData, setFormData] = useState<FormData>({
+    age: 0,
+    name: "",
+    gender: Gender.female,
+  });
+  const getGender = () => {
+    switch (formData.gender) {
+      case Gender.female:
+        return "female";
+      case Gender.male:
+        return "male";
+      case Gender.others:
+        return "others";
+      default:
+        return "female";
+    }
+  };
+  const [checked, setChecked] = useState<boolean>(false);
+  const { isLoading, error, data, refetch, isFetched, status } = useQuery(
+    "createCustomer",
+    () =>
+      fetch("https://komo-backend.ignisda.tech/users/customer", {
+        method: "POST",
+        body: JSON.stringify({
+          name: formData.name,
+          age: formData.age,
+          gender: getGender(),
+        }),
+      }).then((res) => res.json()),
+    {
+      enabled: false,
+    }
   );
+
+  useEffect(() => {
+    if (isFetched) {
+      if (status === "success") {
+        router.push("/");
+      }
+    }
+  }, [status, isFetched, router]);
 
   if (isLoading) return <>Loading...</>;
 
   if (error) return <>An error has occurred: </>;
+
   return (
     <>
       <div className="text-2xl text-primary font-cursive">
-        <h1>Customer Registration</h1>
+        <h1>Enter your details</h1>
       </div>
       <div className="w-full max-w-xs px-4 form-control">
-        <label className="label">
+        <label className="label" htmlFor="name">
           <span className="label-text">Name</span>
         </label>
         <input
           type="text"
+          id="name"
+          name="name"
           placeholder="username"
           className="w-full max-w-xs input input-bordered"
         />
-        <label className="label">
+        <label className="label" htmlFor="age">
           <span className="label-text">Age</span>
         </label>
         <input
           type="number"
+          id="age"
+          name="age"
           min={"14"}
           max="80"
           placeholder="epic age"
@@ -61,7 +108,9 @@ const Customer: NextPage = () => {
           <span className="label-text">I agree to the terms of service</span>
           <input
             type="checkbox"
-            checked
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+            required
             className="checkbox checkbox-primary"
           />
         </label>
@@ -69,6 +118,7 @@ const Customer: NextPage = () => {
           className="w-full mt-4 rounded-full btn btn-primary"
           onClick={(e) => {
             e.preventDefault();
+            refetch();
           }}
         >
           register

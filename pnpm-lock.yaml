@@ -17,6 +17,7 @@ specifiers:
   react-query: ^3.39.2
   tailwindcss: ^3.1.8
   typescript: 4.8.4
+  unique-username-generator: ^1.1.1
 
 dependencies:
   '@fontsource/comfortaa': 4.5.9
@@ -26,6 +27,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
+  unique-username-generator: 1.1.1
 
 devDependencies:
   '@types/node': 18.7.23
@@ -2196,6 +2198,10 @@ packages:
       has-symbols: 1.0.3
       which-boxed-primitive: 1.0.2
     dev: true
+
+  /unique-username-generator/1.1.1:
+    resolution: {integrity: sha512-0FOgI/8T7czM9d7OmDLLTf/DrmsGKYgz6+AmgTEwV61ydbtr7NWmROKV+vY68e/V9xtIpidIY3hYiwEJB6Tg6Q==}
+    dev: false
 
   /unload/2.2.0:
     resolution: {integrity: sha512-B60uB5TNBLtN6/LsgAf3udH9saB5p7gqJwcFfbOEZ8BcBHnGwCf6G/TGiEqkRAxX7zAFIUtzdrXQSdL3Q/wqNA==}
