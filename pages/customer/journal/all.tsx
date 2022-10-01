@@ -72,7 +72,7 @@ const Journal: NextPage = () => {
     <section className="relative flex flex-col w-full h-screen p-6">
       <button
         className="absolute top-0 left-0 m-8 text-4xl"
-        onClick={() => router.push("/journal")}
+        onClick={() => router.push("/")}
       >
         🠔
       </button>

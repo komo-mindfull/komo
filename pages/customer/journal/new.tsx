@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { getStoredToken } from "../../../utils";
 import { toast } from "react-toast";
 import { useRouter } from "next/router";
@@ -8,37 +8,32 @@ import { useRouter } from "next/router";
 const Journal: NextPage = () => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>("");
-  const { isLoading, error, data, refetch, isFetched, status } = useQuery(
-    "createJournal",
-    () =>
-      fetch("https://komo-backend.ignisda.tech/journal", {
-        method: "POST",
-        body: JSON.stringify({
-          title: title,
-          body: body,
-        }),
-        headers: {
-          Authorization: `Bearer ${getStoredToken()}`,
-          ContentType: "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => data),
-    {
-      enabled: false,
-    }
+  const mutation = useMutation("createJournal", () =>
+    fetch("https://komo-backend.ignisda.tech/journal", {
+      method: "POST",
+      body: JSON.stringify({
+        title: title,
+        body: body,
+      }),
+      headers: new Headers({
+        Authorization: `Bearer ${getStoredToken()}`,
+        "content-type": "application/json",
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => data)
   );
   const router = useRouter();
   useEffect(() => {
-    if (isFetched) {
-      if (status === "success") {
+    if (mutation.status !== "idle") {
+      if (mutation.isSuccess) {
         toast.success("Journal entry created successfully");
         router.push("/customer/journal/all");
       } else {
         toast.error("An error occured");
       }
     }
-  }, [status, isFetched, router]);
+  });
   return (
     <section className="flex flex-col w-full h-screen p-6">
       <h1 className="mt-12 text-xl border-t-4 text-primary border-t-gray-400 ">
@@ -71,7 +66,7 @@ const Journal: NextPage = () => {
         <button
           className="btn btn-sm"
           onClick={() => {
-            refetch();
+            mutation.mutate();
           }}
         >
           submit
