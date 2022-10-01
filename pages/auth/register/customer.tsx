@@ -2,7 +2,8 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FC } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import { getStoredToken } from "../../../utils";
 
 enum Gender {
   male,
@@ -36,37 +37,34 @@ const Customer: NextPage = () => {
     }
   };
   const [checked, setChecked] = useState<boolean>(false);
-  const { isLoading, error, data, refetch, isFetched, status } = useQuery(
-    "createCustomer",
-    () =>
-      fetch("https://komo-backend.ignisda.tech/users/customer", {
-        method: "POST",
-        body: JSON.stringify({
-          name: formData.name,
-          age: formData.age,
-          gender: getGender(),
-        }),
+  const mutation = useMutation("createCustomer", () =>
+    fetch("https://komo-backend.ignisda.tech/users/customer", {
+      method: "POST",
+      body: JSON.stringify({
+        name: formData.name,
+        age: formData.age,
+        gender: getGender(),
+      }),
+      headers: new Headers({
+        "content-type": "application/json",
+        Authorization: `Bearer ${getStoredToken()}`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        return data;
       })
-        .then((res) => res.json())
-        .then((data) => {
-          return data;
-        }),
-    {
-      enabled: false,
-    }
   );
 
   useEffect(() => {
-    if (isFetched) {
-      if (status === "success") {
-        router.push("/");
-      }
+    if (mutation.isSuccess) {
+      router.push("/");
     }
-  }, [status, isFetched, router]);
+  }, [router, mutation]);
 
-  if (isLoading) return <>Loading...</>;
+  if (mutation.isLoading) return <>Loading...</>;
 
-  if (error) return <>An error has occurred: </>;
+  if (mutation.error) return <>An error has occurred: </>;
 
   return (
     <>
@@ -122,7 +120,7 @@ const Customer: NextPage = () => {
           className="w-full mt-4 rounded-full btn btn-primary"
           onClick={(e) => {
             e.preventDefault();
-            refetch();
+            mutation.mutate();
           }}
         >
           register

@@ -29,8 +29,6 @@ const Journal: NextPage = () => {
       if (mutation.isSuccess) {
         toast.success("Journal entry created successfully");
         router.push("/customer/journal/all");
-      } else {
-        toast.error("An error occured");
       }
     }
   });

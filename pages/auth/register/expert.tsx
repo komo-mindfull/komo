@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { getStoredToken } from "../../../utils";
 
 enum Profession {
@@ -38,33 +38,29 @@ const Expert: NextPage = () => {
         return "therapist";
     }
   };
-  const { isLoading, error, data, refetch, status } = useQuery(
-    "registerExpert",
-    () =>
-      fetch("https://komo-backend.ignisda.tech/users/expert", {
-        method: "POST",
-        body: JSON.stringify({
-          name: formData.name,
-          profession: getProfession(),
-          yearsOfExperience: formData.yearsOfExperience,
-          organisation: formData.organisation,
-        }),
-        headers: {
-          Authorization: `Bearer ${getStoredToken()}`,
-          "Content-Type": "application/json",
-        },
-      }).then((res) => res.json()),
-    {
-      enabled: false,
-    }
+  const mutation = useMutation("registerExpert", () =>
+    fetch("https://komo-backend.ignisda.tech/users/expert", {
+      method: "POST",
+      body: JSON.stringify({
+        name: formData.name,
+        profession: getProfession(),
+        yearsOfExperience: formData.yearsOfExperience,
+        organisation: formData.organisation,
+      }),
+      headers: {
+        Authorization: `Bearer ${getStoredToken()}`,
+        "Content-Type": "application/json",
+      },
+    }).then((res) => res.json())
   );
 
   useEffect(() => {
-    if (status === "success") router.push("/expert/dashboard");
-  }, [data, router, status]);
-  if (isLoading) return <>Loading...</>;
+    if (mutation.isSuccess) router.push("/expert/dashboard");
+  }, [mutation, router]);
 
-  if (error) return <>An error has occurred: </>;
+  if (mutation.isLoading) return <>Loading...</>;
+
+  if (mutation.error) return <>An error has occurred: </>;
   return (
     <>
       <div className="text-2xl text-primary font-cursive">
@@ -94,7 +90,6 @@ const Expert: NextPage = () => {
           name="profession"
           id="profession"
           value={formData.profession}
-          // onChange={(e) => setProfession(parseInt(e.target.value))}
           onChange={(e) => {
             setFormData({ ...formData, profession: parseInt(e.target.value) });
           }}
@@ -161,7 +156,7 @@ const Expert: NextPage = () => {
           className="w-full mt-4 rounded-full btn btn-primary"
           onClick={(e) => {
             e.preventDefault();
-            if (checked) refetch();
+            mutation.mutate();
           }}
         >
           Login

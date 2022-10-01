@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       href: "/auth",
     },
   ];
-  const [name, setName] = useState<string>("");
+  const [user, setUser] = useState<any>({});
   const [signedIn, setSignedIn] = useState<boolean>(false);
   const { isLoading, refetch, error, data, status } = useQuery(
     "currentuser",
@@ -26,22 +26,23 @@ const Home: NextPage = () => {
         headers: {
           Authorization: `Bearer ${getStoredToken()}`,
         },
-      }).then((res) => res.json()),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUser(data);
+          return data;
+        }),
     {
-      enabled: true,
+      enabled: false,
     }
   );
   const router = useRouter();
   useEffect(() => {
     if (getStoredToken()) {
-      if (status === "success") {
-        setSignedIn(true);
-        setName(data.username);
-      }
-    } else {
-      setSignedIn(false);
+      refetch();
+      setSignedIn(true);
     }
-  }, [data, status, refetch, router]);
+  }, [refetch]);
   return (
     <>
       {!signedIn ? (
@@ -51,7 +52,7 @@ const Home: NextPage = () => {
       ) : (
         status !== "error" && (
           <h1>
-            Welcome <span className="font-bold">{name}</span>
+            Welcome <span className="font-bold">{user.username}</span>
           </h1>
         )
       )}

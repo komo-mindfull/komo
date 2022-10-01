@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { generateUsername } from "unique-username-generator";
 enum UserType {
   customer,
@@ -18,19 +18,14 @@ interface FormInterface {
 
 const Register: NextPage = () => {
   const [checked, isChecked] = useState<boolean>(false);
-  const { status, isLoading, error, data, refetch, isFetched } = useQuery(
-    "register",
-    () =>
-      fetch("https://komo-backend.ignisda.tech/users", {
-        method: "POST",
-        body: JSON.stringify({ ...formData, utype: returnUser() }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => res.json()),
-    {
-      enabled: false,
-    }
+  const mutation = useMutation("register", () =>
+    fetch("https://komo-backend.ignisda.tech/users", {
+      method: "POST",
+      body: JSON.stringify({ ...formData, utype: returnUser() }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => res.json())
   );
   const returnUser = () => {
     switch (formData.type) {
@@ -52,12 +47,11 @@ const Register: NextPage = () => {
     type: UserType.customer,
   });
   useEffect(() => {
-    if (isFetched) {
-      if (status === "success") {
-        router.push(`/auth/register/${returnUser()}`);
-      }
+    if (mutation.isSuccess) {
+      localStorage.setItem("token", mutation.data.access_token);
+      router.push(`/auth/register/${returnUser()}`);
     }
-  }, [data, isFetched, status, router]);
+  }, [mutation, router]);
   return (
     <>
       <div>
@@ -131,7 +125,7 @@ const Register: NextPage = () => {
           className="w-full mt-4 btn btn-primary"
           onClick={(e) => {
             e.preventDefault();
-            refetch();
+            mutation.mutate();
           }}
         >
           Next

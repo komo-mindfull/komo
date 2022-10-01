@@ -3,13 +3,14 @@ import { generateUsername } from "unique-username-generator";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { FC } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 interface FormInterface {
   username?: string;
   password?: string;
 }
 const Auth: NextPage<{}> = ({}) => {
+  // localStorage.removeItem("token");
   const router = useRouter();
   const [formData, setFormData] = useState<FormInterface>({
     password: "",
@@ -28,7 +29,7 @@ const Auth: NextPage<{}> = ({}) => {
     );
     return nice;
   };
-  const { isLoading, error, data, refetch, status } = useQuery(
+  const mutation = useMutation(
     "login",
     () =>
       fetchData()
@@ -43,30 +44,25 @@ const Auth: NextPage<{}> = ({}) => {
           return data;
         }),
     {
-      enabled: false,
+      onSuccess: (data, variables, context) => {
+        router.push("/");
+      },
     }
   );
 
-  useEffect(() => {
-    if (status === "success") {
-      router.push("/");
-    }
-  }, [router, status]);
-
-  if (isLoading)
+  if (mutation.isLoading)
     return (
       <>
         <div className="inline-block w-24 h-24 border-t-8 rounded-full border-t-primary animate-spin"></div>
       </>
     );
-  if (error) return <>An error has occurred: </>;
+  if (mutation.error) return <>An error has occurred: </>;
   return (
     <>
       <div className="text-4xl text-left text-primary font-cursive">
         <span>Welcome To</span>
         <h1>Komo</h1>
       </div>
-      <h2 className="mx-10 ">{JSON.stringify(data)}</h2>
       <div className="w-full max-w-xs px-4 form-control">
         <label className="label" htmlFor="username">
           <span className="label-text">username</span>
@@ -99,7 +95,7 @@ const Auth: NextPage<{}> = ({}) => {
         />
         <button
           onClick={() => {
-            refetch();
+            mutation.mutate();
           }}
           className="w-full mt-4 rounded-full btn btn-primary"
         >
