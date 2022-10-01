@@ -12,7 +12,15 @@ const Home: NextPage = () => {
       href: "/customer/journal",
     },
     {
-      name: "Auth",
+      name: "Profile Update",
+      href: "/auth/update",
+    },
+    {
+      name: "Dashboard",
+      href: "/expert/dashboard",
+    },
+    {
+      name: "Logout",
       href: "/auth",
     },
   ];
@@ -44,25 +52,52 @@ const Home: NextPage = () => {
     }
   }, [refetch]);
   return (
-    <>
+    <section className="flex flex-col items-center justify-center w-full h-screen">
+      <div className="flex items-center justify-center gap-2">
+        <h1 className="text-4xl text-primary">Komo </h1>
+        {signedIn && (
+          <span className="px-2 font-bold text-white rounded-full bg-primary">
+            {user.utype}
+          </span>
+        )}
+      </div>
       {!signedIn ? (
         <>
           <h1>Please sign in to continue</h1>
         </>
       ) : (
         status !== "error" && (
-          <h1>
-            Welcome <span className="font-bold">{user.username}</span>
-          </h1>
+          <>
+            <h1>
+              Welcome <span className="mt-4 font-bold">{user.username}</span>
+            </h1>
+          </>
         )
       )}
-      <h1>Komo Home page</h1>
-      {links.map((link, i) => (
-        <Link key={i} href={link.href}>
-          <a>{link.name}</a>
-        </Link>
-      ))}
-    </>
+      <ul className="flex flex-col w-56 gap-2 my-4 bg-base-100">
+        {links.map((link, i) => {
+          const isHidden =
+            (link.name === "Dashboard" && user.utype === "customer") ||
+            (link.name === "Journal" && user.utype === "expert");
+
+          if (link.name === "Profile Update")
+            link.href = "/auth/update/" + user.utype;
+
+          return (
+            <li
+              key={i}
+              className={
+                `py-2 text-center duration-150 rounded-full cursor-pointer hover:text-white hover:bg-primary-focus outline-2 outline outline-primary` +
+                ` ${isHidden ? "hidden" : ""}`
+              }
+              onClick={() => router.push(link.href)}
+            >
+              <a>{link.name}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 };
 

@@ -18,7 +18,7 @@ interface FormInterface {
   organisation: string;
 }
 
-const Expert: NextPage = () => {
+const ExpertUpdate: NextPage = () => {
   const router = useRouter();
   const [checked, setChecked] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormInterface>({
@@ -41,7 +41,7 @@ const Expert: NextPage = () => {
   };
   const mutation = useMutation("registerExpert", () =>
     fetch("https://komo-backend.ignisda.tech/users/expert", {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({
         name: formData.name,
         profession: getProfession(),
@@ -65,6 +65,7 @@ const Expert: NextPage = () => {
   return (
     <>
       <div className="text-2xl text-primary font-cursive">
+        <h1>Profile Update</h1>
         <h1>Enter your details</h1>
       </div>
       <form className="w-full max-w-xs px-4 form-control">
@@ -167,4 +168,4 @@ const Expert: NextPage = () => {
   );
 };
 
-export default Expert;
+export default ExpertUpdate;

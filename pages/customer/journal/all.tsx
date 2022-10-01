@@ -93,7 +93,7 @@ const Journal: NextPage = () => {
                 }}
               >
                 {/* @ts-ignore */}
-                {entry.date_created.format("DD/dd")}
+                {entry.date_created.format("DD/MM")}
               </li>
             );
           })}

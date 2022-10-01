@@ -17,8 +17,8 @@ const JournalEntry: NextPage = () => {
         >
           🠔
         </button>
-        <h1 className="my-2 text-xl text-left text-primary">{entry?.title}</h1>
-        <p className="h-full text-4xl break-words">{entry?.body}</p>
+        <h1 className="my-2 text-3xl text-left text-primary">{entry?.title}</h1>
+        <p className="h-full text-xl break-words">{entry?.body}</p>
       </section>
     </>
   );

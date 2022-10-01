@@ -18,7 +18,7 @@ interface FormData {
   gender: Gender;
 }
 
-const Customer: NextPage = () => {
+const CustomerUpdate: NextPage = () => {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     age: 0,
@@ -40,7 +40,7 @@ const Customer: NextPage = () => {
   const [checked, setChecked] = useState<boolean>(false);
   const mutation = useMutation("createCustomer", () =>
     fetch("https://komo-backend.ignisda.tech/users/customer", {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({
         name: formData.name,
         age: formData.age,
@@ -70,6 +70,7 @@ const Customer: NextPage = () => {
   return (
     <>
       <div className="text-2xl text-primary font-cursive">
+        <h1>Profile Update</h1>
         <h1>Enter your details</h1>
       </div>
       <form className="w-full max-w-xs px-4 form-control">
@@ -108,7 +109,7 @@ const Customer: NextPage = () => {
           <option value={Gender.others}>others</option>
         </select>
         <label className="mt-4 cursor-pointer label">
-          <span className="label-text">I agree to the terms of service</span>
+          <span className="label-text">confirm changes</span>
           <input
             type="checkbox"
             checked={checked}
@@ -124,11 +125,11 @@ const Customer: NextPage = () => {
             mutation.mutate();
           }}
         >
-          register
+          update profile
         </button>
       </form>
     </>
   );
 };
 
-export default Customer;
+export default CustomerUpdate;
