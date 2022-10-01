@@ -46,7 +46,9 @@ const Customer: NextPage = () => {
           age: formData.age,
           gender: getGender(),
         }),
-      }).then((res) => res.json()),
+      })
+        .then((res) => res.json())
+        .then((data) => localStorage.setItem("token", data.access_token)),
     {
       enabled: false,
     }

@@ -31,20 +31,27 @@ const Auth: NextPage<{}> = ({}) => {
   const { isLoading, error, data, refetch, status } = useQuery(
     "login",
     () =>
-      fetchData().then((res) => {
-        const data = res.json();
-        return data;
-      }),
+      fetchData()
+        .then((res) => {
+          const data = res.json();
+          return data;
+        })
+        .then((data) => {
+          if (data.access_token) {
+            localStorage.setItem("token", data.access_token);
+          }
+          return data;
+        }),
     {
       enabled: false,
     }
   );
+
   useEffect(() => {
-    if (data) {
-      localStorage.setItem("token", JSON.stringify(data));
-      if (status === "success") router.push("/");
+    if (status === "success") {
+      router.push("/");
     }
-  }, [data, router, status]);
+  }, [router, status]);
 
   if (isLoading)
     return (
@@ -59,6 +66,7 @@ const Auth: NextPage<{}> = ({}) => {
         <span>Welcome To</span>
         <h1>Komo</h1>
       </div>
+      <h2 className="mx-10 ">{JSON.stringify(data)}</h2>
       <div className="w-full max-w-xs px-4 form-control">
         <label className="label" htmlFor="username">
           <span className="label-text">username</span>

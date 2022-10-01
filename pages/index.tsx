@@ -3,6 +3,7 @@ import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { getStoredToken } from "../utils";
 
 const Home: NextPage = () => {
   const links = [
@@ -16,38 +17,43 @@ const Home: NextPage = () => {
     },
   ];
   const [name, setName] = useState<string>("");
+  const [signedIn, setSignedIn] = useState<boolean>(false);
   const { isLoading, refetch, error, data, status } = useQuery(
     "currentuser",
     () =>
       fetch("https://komo-backend.ignisda.tech/currentuser", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("token") as string).access_token
-          }`,
+          Authorization: `Bearer ${getStoredToken()}`,
         },
       }).then((res) => res.json()),
     {
-      enabled: false,
+      enabled: true,
     }
   );
   const router = useRouter();
   useEffect(() => {
-    if (status === "success") if (data) setName(data.username);
-    if (JSON.parse(localStorage.getItem("token") as string).access_token) {
-      // token found
-      refetch();
+    if (getStoredToken()) {
+      if (status === "success") {
+        setSignedIn(true);
+        setName(data.username);
+      }
     } else {
-      router.push("/auth");
+      setSignedIn(false);
     }
-    console.log({ status, data });
   }, [data, status, refetch, router]);
   return (
     <>
-      {status !== "error" && (
-        <h1>
-          Welcome <span className="font-bold">{name}</span>
-        </h1>
+      {!signedIn ? (
+        <>
+          <h1>Please sign in to continue</h1>
+        </>
+      ) : (
+        status !== "error" && (
+          <h1>
+            Welcome <span className="font-bold">{name}</span>
+          </h1>
+        )
       )}
       <h1>Komo Home page</h1>
       {links.map((link, i) => (
