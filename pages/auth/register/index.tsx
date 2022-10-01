@@ -24,6 +24,9 @@ const Register: NextPage = () => {
       fetch("https://komo-backend.ignisda.tech/users", {
         method: "POST",
         body: JSON.stringify({ ...formData, utype: returnUser() }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       }).then((res) => res.json()),
     {
       enabled: false,
@@ -58,7 +61,7 @@ const Register: NextPage = () => {
   return (
     <>
       <div>
-        <h1>new user</h1>
+        <h1 className="mb-2 text-3xl text-primary">new user</h1>
       </div>
       <form className="w-full max-w-xs px-4 form-control">
         <label

@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { getStoredToken } from "../../../utils";
 
 enum Profession {
   counsellor,
@@ -49,9 +50,8 @@ const Expert: NextPage = () => {
           organisation: formData.organisation,
         }),
         headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("token") as string).access_token
-          }`,
+          Authorization: `Bearer ${getStoredToken()}`,
+          "Content-Type": "application/json",
         },
       }).then((res) => res.json()),
     {
@@ -159,7 +159,8 @@ const Expert: NextPage = () => {
         </label>
         <button
           className="w-full mt-4 rounded-full btn btn-primary"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             if (checked) refetch();
           }}
         >

@@ -62,7 +62,7 @@ const Auth: NextPage<{}> = ({}) => {
   if (error) return <>An error has occurred: </>;
   return (
     <>
-      <div className="text-2xl text-primary font-cursive">
+      <div className="text-4xl text-left text-primary font-cursive">
         <span>Welcome To</span>
         <h1>Komo</h1>
       </div>

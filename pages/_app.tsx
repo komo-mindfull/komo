@@ -2,30 +2,48 @@ import "../styles/globals.css";
 import "@fontsource/comfortaa";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { createContext, useContext, useState } from "react";
+import { ToastContainer } from "react-toast";
+import dayjs from "dayjs";
 
 const queryClient = new QueryClient();
 
+export interface journalentry {
+  body: string;
+  title: string;
+  date_created: Date;
+  id: number;
+}
+
+export type GlobalContent = {
+  journalEntries: Array<journalentry>;
+  setJournalEntries: (prev: Array<journalentry>) => void;
+};
+
+export const MyGlobalContext = createContext<GlobalContent>({
+  journalEntries: [],
+  setJournalEntries: () => {},
+});
+
+export const useGlobalContext = () => useContext(MyGlobalContext);
+
 function MyApp({ Component, pageProps }: AppProps) {
-  const inValidateLogin = () => {
-    queryClient.invalidateQueries("login");
-  }
+  const [journalEntries, setJournalEntries] = useState<Array<journalentry>>([]);
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="grid h-screen place-items-center">
-        <div className="mockup-phone">
-          <div className="h-auto camera"></div>
-          <div className="display">
-            <div className="artboard artboard-demo phone-2">
-              <Component {...pageProps} invalidateLogin={inValidateLogin} />
+      <MyGlobalContext.Provider value={{ journalEntries, setJournalEntries }}>
+        <div className="grid h-screen place-items-center">
+          <div className="mockup-phone">
+            <div className="h-auto camera"></div>
+            <div className="display">
+              <div className="artboard artboard-demo phone-2">
+                <Component {...pageProps} />
+              </div>
             </div>
           </div>
+          <ToastContainer />
         </div>
-      </div>
-      {/* <main className="flex justify-center w-full h-screen bg-green-300 font-cursive">
-        <section className="bg-slate-50 h-screen w-[480px] shadow-2xl">
-          <Component {...pageProps} />
-        </section>
-      </main> */}
+      </MyGlobalContext.Provider>
     </QueryClientProvider>
   );
 }

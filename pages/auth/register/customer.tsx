@@ -48,7 +48,9 @@ const Customer: NextPage = () => {
         }),
       })
         .then((res) => res.json())
-        .then((data) => localStorage.setItem("token", data.access_token)),
+        .then((data) => {
+          return data;
+        }),
     {
       enabled: false,
     }
@@ -71,7 +73,7 @@ const Customer: NextPage = () => {
       <div className="text-2xl text-primary font-cursive">
         <h1>Enter your details</h1>
       </div>
-      <div className="w-full max-w-xs px-4 form-control">
+      <form className="w-full max-w-xs px-4 form-control">
         <label className="label" htmlFor="name">
           <span className="label-text">Name</span>
         </label>
@@ -125,7 +127,7 @@ const Customer: NextPage = () => {
         >
           register
         </button>
-      </div>
+      </form>
     </>
   );
 };

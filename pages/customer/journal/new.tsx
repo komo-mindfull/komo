@@ -12,13 +12,14 @@ const Journal: NextPage = () => {
     "createJournal",
     () =>
       fetch("https://komo-backend.ignisda.tech/journal", {
-        method: "post",
+        method: "POST",
         body: JSON.stringify({
-          title,
-          body,
+          title: title,
+          body: body,
         }),
         headers: {
           Authorization: `Bearer ${getStoredToken()}`,
+          ContentType: "application/json",
         },
       })
         .then((res) => res.json())
@@ -30,14 +31,14 @@ const Journal: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
     if (isFetched) {
-      if (!error) {
+      if (status === "success") {
         toast.success("Journal entry created successfully");
         router.push("/customer/journal/all");
       } else {
         toast.error("An error occured");
       }
     }
-  }, [error, isFetched, router]);
+  }, [status, isFetched, router]);
   return (
     <section className="flex flex-col w-full h-screen p-6">
       <h1 className="mt-12 text-xl border-t-4 text-primary border-t-gray-400 ">
@@ -64,7 +65,6 @@ const Journal: NextPage = () => {
         value={body}
         onChange={(e) => {
           setBody(e.target.value);
-          console.log({ title, body });
         }}
       />
       {body.length !== 0 && title.length !== 0 && (

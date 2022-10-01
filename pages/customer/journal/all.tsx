@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { getStoredToken } from "../../../utils";
 import dayjs from "dayjs";
+import { useGlobalContext, journalentry } from "../../_app";
+import { useRouter } from "next/router";
 
 enum Mood {
   happy,
@@ -11,18 +13,16 @@ enum Mood {
   neutral,
 }
 
-interface JournalEntry {
-  title: string;
-  body: string;
-  date_created: Date;
-  id: number;
-  mood?: Mood;
-}
-
 const Journal: NextPage = () => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>("");
-  const [journalEntries, setJournalEntries] = useState<Array<JournalEntry>>([]);
+  const { journalEntries, setJournalEntries } = useGlobalContext();
+  const journalEntriesChunks: Array<Array<journalentry>> = [];
+  for (let i = 0; i < journalEntries.length; i += 4) {
+    const chunk = journalEntries.slice(i, i + 4);
+    journalEntriesChunks.push(chunk);
+  }
+  const router = useRouter();
   const getMood = (userMood: Mood) => {
     switch (userMood) {
       case Mood.happy:
@@ -46,6 +46,10 @@ const Journal: NextPage = () => {
       })
         .then((res) => res.json())
         .then((data) => {
+          data = data.map((entry: any) => {
+            entry.date_created = dayjs(entry.date_created);
+            return entry;
+          });
           setJournalEntries(data);
           return data;
         })
@@ -65,20 +69,36 @@ const Journal: NextPage = () => {
     }
   };
   return (
-    <section className="flex flex-col w-full h-screen p-6">
+    <section className="relative flex flex-col w-full h-screen p-6">
+      <button
+        className="absolute top-0 left-0 m-8 text-4xl"
+        onClick={() => router.push("/journal")}
+      >
+        🠔
+      </button>
       <h1 className="mt-12 text-xl border-t-4 text-primary border-t-gray-400 ">
         Komo
       </h1>
       <span>your mindfulness journal</span>
-      <ul className="my-4 steps">
-        {journalEntries.map((entry: JournalEntry, i) => {
-          return (
-            <li className={`step step-success`} data-content="" key={i}>
-              {dayjs().add(i, "day").format("dd/DD")}
-            </li>
-          );
-        })}
-      </ul>
+      {journalEntriesChunks.map((chunk, index) => (
+        <ul key={index} className="my-4 steps">
+          {chunk.map((entry, i) => {
+            return (
+              <li
+                className={`step step-success cursor-pointer`}
+                data-content=""
+                key={i}
+                onClick={() => {
+                  router.push("/customer/journal/" + entry.id);
+                }}
+              >
+                {/* @ts-ignore */}
+                {entry.date_created.format("DD/dd")}
+              </li>
+            );
+          })}
+        </ul>
+      ))}
       {body.length !== 0 && title.length !== 0 && (
         <button
           className="btn btn-sm"
