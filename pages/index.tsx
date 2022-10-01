@@ -49,8 +49,10 @@ const Home: NextPage = () => {
     if (getStoredToken()) {
       refetch();
       setSignedIn(true);
+    } else {
+      router.push("/auth");
     }
-  }, [refetch]);
+  }, [refetch, router]);
   return (
     <section className="flex flex-col items-center justify-center w-full h-screen">
       <div className="flex items-center justify-center gap-2">
