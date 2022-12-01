@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { getStoredToken } from "../../../utils";
+import { getStoredToken } from "../../../src/utils";
 import dayjs from "dayjs";
 import { useGlobalContext, journalentry } from "../../_app";
 import { useRouter } from "next/router";

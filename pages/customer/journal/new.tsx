@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { getStoredToken } from "../../../utils";
+import { getStoredToken } from "../../../src/utils";
 import { toast } from "react-toast";
 import { useRouter } from "next/router";
 

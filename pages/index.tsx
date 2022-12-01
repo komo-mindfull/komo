@@ -3,45 +3,31 @@ import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { getStoredToken } from "../utils";
+import { links } from "../src/links";
+import { getStoredToken } from "../src/utils";
 
 const Home: NextPage = () => {
-  const links = [
-    {
-      name: "Journal",
-      href: "/customer/journal",
-    },
-    {
-      name: "Profile Update",
-      href: "/auth/update",
-    },
-    {
-      name: "Dashboard",
-      href: "/expert/dashboard",
-    },
-    {
-      name: "Logout",
-      href: "/auth",
-    },
-  ];
+  
   const [user, setUser] = useState<any>({});
   const [signedIn, setSignedIn] = useState<boolean>(false);
   const { isLoading, refetch, error, data, status } = useQuery(
-    "currentuser",
-    () =>
-      fetch("https://komo-backend.ignisda.tech/currentuser", {
+    "currentUser",
+    async () => {
+      console.log("fetching current user");
+      const response = await fetch("https://komo.jupeeter.tech/currentuser", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${getStoredToken()}`,
         },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setUser(data);
-          return data;
-        }),
+      });
+      const data = await response.json();
+      return data;
+    },
     {
       enabled: false,
+      onSuccess: (data) => {
+        setUser(data);
+      },
     }
   );
   const router = useRouter();

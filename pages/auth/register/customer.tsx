@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FC } from "react";
 import { useMutation, useQuery } from "react-query";
 import Loading from "../../../components/Loading";
-import { getStoredToken } from "../../../utils";
+import { getStoredToken } from "../../../src/utils";
 
 enum Gender {
   male,

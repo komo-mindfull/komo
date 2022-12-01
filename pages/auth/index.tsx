@@ -10,41 +10,28 @@ interface FormInterface {
   password?: string;
 }
 const Auth: NextPage<{}> = ({}) => {
-  // localStorage.removeItem("token");
   const router = useRouter();
   const [formData, setFormData] = useState<FormInterface>({
     password: "",
     username: "",
   });
-  const fetchData = () => {
-    const data = new FormData();
-    data.append("username", formData.username as string | Blob);
-    data.append("password", formData.password as string | Blob);
-    const nice: Promise<Response> = fetch(
-      "https://komo-backend.ignisda.tech/login",
-      {
-        method: "POST",
-        body: data,
-      }
-    );
-    return nice;
-  };
   const mutation = useMutation(
     "login",
-    () =>
-      fetchData()
-        .then((res) => {
-          const data = res.json();
-          return data;
-        })
-        .then((data) => {
-          if (data.access_token) {
-            localStorage.setItem("token", data.access_token);
-          }
-          return data;
-        }),
+    async () => {
+      const myForm = new FormData();
+      myForm.append("username", formData.username as string | Blob);
+      myForm.append("password", formData.password as string | Blob);
+      const response = await fetch("https://komo.jupeeter.tech/login", {
+        method: "POST",
+        body: myForm,
+      });
+      const data = await response.json();
+      return data;
+    },
     {
       onSuccess: (data, variables, context) => {
+        console.log("success", { data });
+        localStorage.setItem("token", data.access_token);
         router.push("/");
       },
     }
@@ -59,10 +46,7 @@ const Auth: NextPage<{}> = ({}) => {
   if (mutation.error) return <>An error has occurred: </>;
   return (
     <>
-      <div className="text-4xl text-left text-primary font-cursive">
-        <span>Welcome To</span>
-        <h1>Komo</h1>
-      </div>
+      <h1 className="text-5xl uppercase">Komo</h1>
       <div className="w-full max-w-xs px-4 form-control">
         <label className="label" htmlFor="username">
           <span className="label-text">username</span>
