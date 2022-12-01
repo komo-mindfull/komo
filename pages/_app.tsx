@@ -2,9 +2,8 @@ import "../styles/globals.css";
 import "@fontsource/comfortaa";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { createContext, useContext, useState } from "react";
-import { ToastContainer } from "react-toast";
-import dayjs from "dayjs";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +28,9 @@ export const useGlobalContext = () => useContext(MyGlobalContext);
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [journalEntries, setJournalEntries] = useState<Array<journalentry>>([]);
+  useEffect(() => {
+    
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <MyGlobalContext.Provider value={{ journalEntries, setJournalEntries }}>
@@ -41,7 +43,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               </div>
             </div>
           </div>
-          <ToastContainer />
+          <Toaster />
         </div>
       </MyGlobalContext.Provider>
     </QueryClientProvider>

@@ -38,7 +38,7 @@ const Journal: NextPage = () => {
   const { isLoading, error, data, refetch, isFetched, status } = useQuery(
     "createJournal",
     () =>
-      fetch("https://komo-backend.ignisda.tech/journal", {
+      fetch("https://komo.jupeeter.tech/journal", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${getStoredToken()}`,

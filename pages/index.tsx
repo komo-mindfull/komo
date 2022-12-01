@@ -2,12 +2,12 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useQuery } from "react-query";
 import { links } from "../src/links";
 import { getStoredToken } from "../src/utils";
 
 const Home: NextPage = () => {
-  
   const [user, setUser] = useState<any>({});
   const [signedIn, setSignedIn] = useState<boolean>(false);
   const { isLoading, refetch, error, data, status } = useQuery(
@@ -27,6 +27,11 @@ const Home: NextPage = () => {
       enabled: false,
       onSuccess: (data) => {
         setUser(data);
+        toast(`Welcome to Komo! ${data.username}`, {
+          icon: "👋",
+          duration: 4000,
+          position: "top-center",
+        });
       },
     }
   );
@@ -42,7 +47,7 @@ const Home: NextPage = () => {
   return (
     <section className="flex flex-col items-center justify-center w-full h-screen">
       <div className="flex items-center justify-center gap-2">
-        <h1 className="text-4xl text-primary">Komo </h1>
+        <h1 className="text-4xl text-primary">Komo</h1>
         {signedIn && (
           <span className="px-2 font-bold text-white rounded-full bg-primary">
             {user.utype}
