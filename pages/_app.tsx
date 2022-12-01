@@ -4,6 +4,7 @@ import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
+import { ReactFlowProvider } from "reactflow";
 
 const queryClient = new QueryClient();
 
@@ -28,9 +29,7 @@ export const useGlobalContext = () => useContext(MyGlobalContext);
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [journalEntries, setJournalEntries] = useState<Array<journalentry>>([]);
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
   return (
     <QueryClientProvider client={queryClient}>
       <MyGlobalContext.Provider value={{ journalEntries, setJournalEntries }}>
@@ -39,7 +38,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             <div className="h-auto camera"></div>
             <div className="display">
               <div className="artboard artboard-demo phone-2">
-                <Component {...pageProps} />
+                <ReactFlowProvider>
+                  <Component {...pageProps} />
+                </ReactFlowProvider>
               </div>
             </div>
           </div>

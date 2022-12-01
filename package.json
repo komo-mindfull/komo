@@ -19,6 +19,7 @@
     "react-hot-toast": "^2.4.0",
     "react-query": "^3.39.2",
     "react-toast": "^1.0.3",
+    "reactflow": "^11.3.2",
     "unique-username-generator": "^1.1.1"
   },
   "devDependencies": {

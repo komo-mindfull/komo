@@ -1,8 +1,10 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import { generateUsername } from "unique-username-generator";
+
 enum UserType {
   customer,
   expert,
@@ -18,27 +20,35 @@ interface FormInterface {
 
 const Register: NextPage = () => {
   const [checked, isChecked] = useState<boolean>(false);
-  const mutation = useMutation("register", () =>
-    fetch("https://komo-backend.ignisda.tech/users", {
-      method: "POST",
-      body: JSON.stringify({ ...formData, utype: returnUser() }),
-      headers: {
-        "Content-Type": "application/json",
+  const mutation = useMutation(
+    "register",
+    async () => {
+      const response = await fetch("https://komo.jupeeter.tech/users", {
+        method: "POST",
+        body: JSON.stringify({ ...formData, utype: "customer" }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      return data
+    },
+    {
+      onSuccess: (data) => {
+        toast.success(`${data.username} created! Please login to continue`, {
+          icon: "👍",
+          duration: 2000
+        });
+        router.push("/auth/");
       },
-    }).then((res) => res.json())
-  );
-  const returnUser = () => {
-    switch (formData.type) {
-      case UserType.customer:
-        return "customer";
-      case UserType.expert:
-        return "expert";
-      case UserType.admin:
-        return "admin";
-      default:
-        return "customer";
+      onError: (error) => {
+        toast.error("error occurred", {
+          icon: "👎",
+          duration: 2000
+        });
+      }
     }
-  };
+  );
   const router = useRouter();
   const [formData, setFormData] = useState({
     password: "",
@@ -46,12 +56,6 @@ const Register: NextPage = () => {
     email: "",
     type: UserType.customer,
   });
-  useEffect(() => {
-    if (mutation.isSuccess) {
-      localStorage.setItem("token", mutation.data.access_token);
-      router.push(`/auth/register/${returnUser()}`);
-    }
-  }, [mutation, router]);
   return (
     <>
       <div>
@@ -109,18 +113,6 @@ const Register: NextPage = () => {
             setFormData({ ...formData, password: e.target.value });
           }}
         />
-        <select
-          className="w-full max-w-xs mt-4 select"
-          name="user-type"
-          id="user-type"
-          value={formData.type}
-          onChange={(e) =>
-            setFormData({ ...formData, type: parseInt(e.target.value) })
-          }
-        >
-          <option value={UserType.customer}>customer</option>
-          <option value={UserType.expert}>expert</option>
-        </select>
         <button
           className="w-full mt-4 btn btn-primary"
           onClick={(e) => {
@@ -128,7 +120,7 @@ const Register: NextPage = () => {
             mutation.mutate();
           }}
         >
-          Next
+          Register
         </button>
       </form>
     </>

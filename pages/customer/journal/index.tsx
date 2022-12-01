@@ -15,16 +15,16 @@ const JournalIndex = () => {
   return (
     <div className="relative flex flex-col justify-center w-full h-screen px-8">
       <button
-        className="absolute top-0 left-0 m-8 text-4xl"
+        className="fixed top-0 left-0 m-8 text-4xl"
         onClick={() => router.push("/")}
       >
         🠔
       </button>
-      <ul className="flex flex-col w-56 gap-4 bg-base-100">
+      <ul className="flex flex-col w-full gap-4 bg-base-100">
         {links.map((link, i) => (
           <li
             key={i}
-            className="py-4 pl-6 pr-8 font-bold duration-150 rounded-full cursor-pointer hover:text-white hover:bg-primary-focus"
+            className="py-4 pl-6 pr-8 duration-150 rounded-full cursor-pointer hover:text-white hover:bg-primary-focus"
             onClick={() => router.push(link.href)}
           >
             {link.name}

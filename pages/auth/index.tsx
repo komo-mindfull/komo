@@ -30,8 +30,10 @@ const Auth: NextPage<{}> = ({}) => {
     },
     {
       onSuccess: (data, variables, context) => {
-        console.log("success", { data });
         localStorage.setItem("token", data.access_token);
+        if (!data.customer_registerd)
+          router.push("/auth/register/customer")
+        else 
         router.push("/");
       },
     }
