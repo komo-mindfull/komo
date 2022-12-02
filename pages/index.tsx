@@ -26,6 +26,13 @@ const Home: NextPage = () => {
     {
       enabled: false,
       onSuccess: (data) => {
+        if(!!data.detail && data.detail === "Could not validate the user")
+        {
+          toast.error("Could not validate the user");
+          localStorage.removeItem("token");
+          Router.push("/auth");
+        }
+        console.log(data)
         setUser(data);
         toast(`Welcome to Komo! ${data.username}`, {
           icon: "👋",
@@ -38,6 +45,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
     if (getStoredToken()) {
+      console.log("token found");
       refetch();
       setSignedIn(true);
     } else {
