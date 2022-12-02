@@ -4,10 +4,6 @@ import { Handle, Position } from "reactflow";
 const handleStyle = { display: "block", background: "#fafafa00", border: "none" };
 
 export default function TextUpdaterNode({ data }: { data : any}) {
-  const onChange = useCallback((evt: any) => {
-    console.log(evt.target.value);
-  }, []);
-
   return (
     <>
       <div
@@ -22,7 +18,7 @@ export default function TextUpdaterNode({ data }: { data : any}) {
           fontSize: "0.8rem",
           position: "relative",
         }}
-        onClick={() => data.setRandomNum(Math.floor(Math.random()*40))}
+        onClick={() => data.openJournal(data.journalData)}
       >
         <Handle type="source" position={Position.Bottom} style={handleStyle} />{" "}
         <Handle type="target" position={Position.Top} style={handleStyle} />
@@ -35,7 +31,7 @@ export default function TextUpdaterNode({ data }: { data : any}) {
             width: "72px",
           }}
         >
-          I&apos;m a journal title
+          {data.journalData.title}
         </div>
       </div>
     </>
