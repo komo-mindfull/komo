@@ -13,7 +13,6 @@ const SingleJournal: FC<{
   const addLink = useMutation(
     "addLink",
     async (newChild: number) => {
-    //   throw Error("Not implemented");
       const response = await fetch(
         `https://komo.jupeeter.tech/journal/links/${newChild}`,
         {
@@ -40,34 +39,34 @@ const SingleJournal: FC<{
   );
   if (!isOpen) return null;
   return (
-    <div className="absolute top-0 left-0 w-full h-full bg-white shadow-xl card">
+    <div
+      style={{
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        background: "#fafafa",
+        top: 0,
+        left: 0,
+      }}
+    >
       <div className="card-body">
         <h2 className="mt-8 card-title">{journalEntry.title}</h2>
+        <h2 className="mb-8">{new Date(journalEntry.date_created).toDateString()}</h2>
         {/* This is an accordian */}
-        <div className="collapse">
-          <input type="checkbox" />
-          <div className="font-medium collapse-title">Reason</div>
-          <div className="collapse-content">
-            <p>{journalEntry.reason}</p>
-          </div>
-        </div>
+        <div className="font-bold">Reason</div>
+        <p>{journalEntry.reason}</p>
         {/* end */}
         {/* This is an accordian */}
-        <div className="collapse">
-          <input type="checkbox" />
-          <div className="font-medium collapse-title">Reflection</div>
-          <div className="collapse-content">
-            <p>{journalEntry.reflection}</p>
-          </div>
-        </div>
+        <div className="font-bold">Reflection</div>
+        <p>{journalEntry.reflection}</p>
         {/* end */}
         <input
           type={"number"}
           placeholder={"link to another ↵"}
           onKeyDown={(e) => {
-            console.log(e.currentTarget.value)
             if (e.key === "Enter") {
-              addLink.mutate(parseInt(e.currentTarget.value));
+              if (e.currentTarget.value)
+                addLink.mutate(parseInt(e.currentTarget.value));
             }
           }}
           className={"input input-bordered my-4"}

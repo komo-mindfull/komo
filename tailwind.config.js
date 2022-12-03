@@ -5,7 +5,7 @@ module.exports = {
       body: ['Comfortaa', 'cursive'],
     },
   },
-  plugins: [require('daisyui')],
+  plugins: [require("daisyui")],
   daisyui: {
     styled: true,
     themes: true,
