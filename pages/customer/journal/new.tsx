@@ -5,7 +5,7 @@ import { FC, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { toast } from "react-hot-toast";
 import { getStoredToken } from "../../../src/utils";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 const Journal: NextPage = () => {
   const router = useRouter();
   const [step, setStep] = useState<number>(1);
@@ -44,6 +44,7 @@ const Step: FC<{
     reason: "",
     link: 0,
   });
+  const queryClient = useQueryClient();
   const mutation = useMutation(
     "createJournal",
     async () => {
@@ -67,6 +68,7 @@ const Step: FC<{
     {
       onSuccess: () => {
         toast.success("Journal entry created!");
+        queryClient.refetchQueries({ queryKey: ["journal"], active: true });
         router.push("/customer/journal/all");
       },
     }

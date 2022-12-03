@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { FC, useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getStoredToken } from "../src/utils";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ const SingleJournal: FC<{
   onClose: () => void;
   isOpen: boolean;
 }> = ({ journalEntry, onClose, isOpen }) => {
+  const queryClient = useQueryClient();
   const addLink = useMutation(
     "addLink",
     async (newChild: number) => {
@@ -30,6 +31,7 @@ const SingleJournal: FC<{
     {
       onSuccess(data) {
         toast.success("Link added successfully");
+        queryClient.refetchQueries({ queryKey: ["journal"], active: true });
         onClose();
       },
       onError(error) {
@@ -51,15 +53,27 @@ const SingleJournal: FC<{
     >
       <div className="card-body">
         <h2 className="mt-8 card-title">{journalEntry.title}</h2>
-        <h2 className="mb-8">{new Date(journalEntry.date_created).toDateString()}</h2>
-        {/* This is an accordian */}
+        <h2 className="mb-8">
+          {new Date(journalEntry.date_created).toDateString()}
+        </h2>
         <div className="font-bold">Reason</div>
-        <p>{journalEntry.reason}</p>
-        {/* end */}
-        {/* This is an accordian */}
+        <p
+          style={{
+            height: "64px",
+            overflowY: "scroll",
+          }}
+        >
+          {journalEntry.reason}
+        </p>
         <div className="font-bold">Reflection</div>
-        <p>{journalEntry.reflection}</p>
-        {/* end */}
+        <p
+          style={{
+            height: "92px",
+            overflowY: "scroll",
+          }}
+        >
+          {journalEntry.reflection}
+        </p>
         <input
           type={"number"}
           placeholder={"link to another ↵"}

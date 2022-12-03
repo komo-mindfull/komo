@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { FC, useEffect, useMemo, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { getStoredToken } from "../../../src/utils";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -52,8 +52,9 @@ const Journal: NextPage = () => {
   };
   const nodeTypes = useMemo(() => ({ textUpdater: TextUpdaterNode }), []);
   const query = useQuery(
-    "getAllJournals",
+    ["journal", "all"],
     async () => {
+      console.log("fetching all journals")
       const response = await fetch("https://komo.jupeeter.tech/journal", {
         method: "GET",
         headers: {
@@ -63,47 +64,6 @@ const Journal: NextPage = () => {
 
       const data = await response.json();
       return data;
-      return {
-        data: [
-          {
-            id: 1,
-            title: "Hello",
-            mood: "happy",
-            reason: "123123",
-            reflection: "123123",
-            date_created: "2022-12-01T17:12:36.296956+00:00",
-          },
-          {
-            id: 2,
-            title: "Dev Bartan",
-            mood: "sad",
-            reason: "Donno",
-            reflection: "That gal was looking very fine",
-            date_created: "2022-12-01T17:45:12.261211+00:00",
-          },
-          {
-            id: 3,
-            title: "Shivom Srivastava",
-            mood: "happy",
-            reason: "Feeling Very fine",
-            reflection: "happy",
-            date_created: "2022-12-01T17:51:23.125452+00:00",
-          },
-          {
-            id: 4,
-            title: "Dev Bartan Bad",
-            mood: "anxious",
-            reason: "Coz dev brtan bad",
-            reflection: "Dev Brtn Bad",
-            date_created: "2022-12-01T19:48:36.755010+00:00",
-          },
-        ],
-        nodes: [1, 2, 3, 4],
-        edges: [
-          [1, 2],
-          [1, 3],
-        ],
-      };
     },
     {
       onSuccess: (data) => {
@@ -132,7 +92,7 @@ const Journal: NextPage = () => {
                 openJournal,
               },
               type: "textUpdater",
-              connectable: false
+              connectable: false,
             };
           }
         );
@@ -180,7 +140,7 @@ const Journal: NextPage = () => {
           fitView={true}
           nodeTypes={nodeTypes}
         >
-          {/* <Controls /> */}
+          <Controls />
           <Background />
         </ReactFlow>
       </div>
