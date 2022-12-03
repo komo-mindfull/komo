@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { FC } from "react";
 import { useMutation, useQuery } from "react-query";
+import { toast } from "react-hot-toast";
 
 interface FormInterface {
   username?: string;
@@ -15,6 +16,11 @@ const Auth: NextPage<{}> = ({}) => {
     password: "",
     username: "",
   });
+  useEffect(() => {
+    // clearing the token from local storage
+    console.log("clearing token");
+    localStorage.removeItem("token");
+  }, [])
   const mutation = useMutation(
     "login",
     async () => {
@@ -26,6 +32,8 @@ const Auth: NextPage<{}> = ({}) => {
         body: myForm,
       });
       const data = await response.json();
+      if (response.status !== 200)
+        throw new Error("Something went wrong");
       return data;
     },
     {
@@ -36,6 +44,9 @@ const Auth: NextPage<{}> = ({}) => {
         else 
         router.push("/");
       },
+      onError: (err) => {
+        toast.error("Something went wrong");
+      }
     }
   );
 
@@ -45,7 +56,6 @@ const Auth: NextPage<{}> = ({}) => {
         <div className="inline-block w-24 h-24 border-t-8 rounded-full border-t-primary animate-spin"></div>
       </>
     );
-  if (mutation.error) return <>An error has occurred: </>;
   return (
     <>
       <h1 className="text-5xl uppercase">Komo</h1>
@@ -81,6 +91,7 @@ const Auth: NextPage<{}> = ({}) => {
         />
         <button
           onClick={() => {
+            if(formData.username && formData.password)
             mutation.mutate();
           }}
           className="w-full mt-4 rounded-full btn btn-primary"

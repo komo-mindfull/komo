@@ -53,6 +53,7 @@ const SingleJournal: FC<{
     >
       <div className="card-body">
         <h2 className="mt-8 card-title">{journalEntry.title}</h2>
+        <h2 className="font-bold">{journalEntry.mood}</h2>
         <h2 className="mb-8">
           {new Date(journalEntry.date_created).toDateString()}
         </h2>
@@ -79,7 +80,7 @@ const SingleJournal: FC<{
           placeholder={"link to another ↵"}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              if (e.currentTarget.value)
+              if (e.currentTarget.value && (parseInt(e.currentTarget.value) > 0) && (parseInt(e.currentTarget.value) !== journalEntry.id))
                 addLink.mutate(parseInt(e.currentTarget.value));
             }
           }}
