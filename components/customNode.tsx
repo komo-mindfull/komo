@@ -1,15 +1,19 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
 
-const handleStyle = { display: "block", background: "#fafafa00", border: "none" };
+const handleStyle = {
+  display: "block",
+  background: "#fafafa00",
+  border: "none",
+};
 
-export default function TextUpdaterNode({ data }: { data : any}) {
+export default function TextUpdaterNode({ data }: { data: any }) {
   return (
     <>
       <div
         style={{
-          width: 12,
-          height: 12,
+          width: 15,
+          height: 15,
           color: data.colors[1],
           background: data.colors[0],
           borderRadius: "50%",
@@ -31,7 +35,7 @@ export default function TextUpdaterNode({ data }: { data : any}) {
             width: "72px",
           }}
         >
-          {data.journalData.title}
+          {data.journalData.title} {data.journalData.id}
         </div>
       </div>
     </>

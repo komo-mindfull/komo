@@ -24,7 +24,7 @@ const Customer: NextPage = () => {
   const mutation = useMutation(
     "createCustomer",
     async () => {
-      const response = await fetch("https://jupeeter.tech/users/customer", {
+      const response = await fetch("https://komo.jupeeter.tech/users/customer", {
         method: "POST",
         body: JSON.stringify({
           name: formData.name,
