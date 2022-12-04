@@ -1,0 +1,1 @@
+type moodType = "happy" | "sad" | "nervous" | "anxious" | "neutral" | "angry";

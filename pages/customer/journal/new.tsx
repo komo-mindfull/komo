@@ -22,8 +22,6 @@ const Journal: NextPage = () => {
   );
 };
 
-type moodType = "happy" | "sad" | "nervous" | "anxious";
-
 interface JournalEntry {
   title: string;
   mood: moodType;
@@ -107,7 +105,16 @@ const Step: FC<{
             <h2 className="card-title">How are you feeling today?</h2>
             <div className="card-actions">
               <button
-                className="w-full btn btn-primary"
+                className="w-full btn btn-warning"
+                onClick={() => {
+                  setEntry((old) => ({ ...old, mood: "neutral" }));
+                  setStep((old) => old + 1);
+                }}
+              >
+                Neutral
+              </button>
+              <button
+                className="w-full btn btn-success"
                 onClick={() => {
                   setEntry((old) => ({ ...old, mood: "happy" }));
                   setStep((old) => old + 1);
@@ -117,6 +124,15 @@ const Step: FC<{
               </button>
               <button
                 className="w-full btn btn-error"
+                onClick={() => {
+                  setEntry((old) => ({ ...old, mood: "angry" }));
+                  setStep((old) => old + 1);
+                }}
+              >
+                Angry
+              </button>
+              <button
+                className="w-full btn btn-accent"
                 onClick={() => {
                   setEntry((old) => ({ ...old, mood: "sad" }));
                   setStep((old) => old + 1);
@@ -157,7 +173,11 @@ const Step: FC<{
       return (
         <div className="w-full shadow-xl card bg-base-100">
           <div className="card-body">
-            <h2 className="card-title">Why do you feel {entry.mood}?</h2>
+            {entry.mood == "neutral" ? (
+              <h2 className="card-title">What&apos;s on your mind</h2>
+            ) : (
+              <h2 className="card-title">Why do you feel {entry.mood}?</h2>
+            )}
             <textarea
               className="p-4 textarea-bordered textarea"
               placeholder="type something"

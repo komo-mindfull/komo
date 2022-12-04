@@ -32,11 +32,13 @@ const initialNodes = [
 
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
-const MoodColorMapping = new Map<string, Array<string>>([
-  ["happy", ["green", "white"]],
-  ["sad", ["black", "white"]],
-  ["nervous", ["pink", "black"]],
-  ["anxious", ["crimson", "white"]],
+const MoodColorMapping = new Map<moodType, Array<string>>([
+  ["happy", ["#FFC400", "white"]],
+  ["anxious", ["#656262", "white"]],
+  ["nervous", ["#7CB342", "black"]],
+  ["sad", ["#2A2871", "white"]],
+  ["neutral", ["#E57373", "white"]],
+  ["angry", ["#FF5252", "white"]],
 ]);
 
 const Journal: NextPage = () => {
