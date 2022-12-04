@@ -81,11 +81,12 @@ const Journal: NextPage = () => {
             },
             i: number
           ) => {
+            const rn = Math.floor(Math.random() * 4)
             return {
               id: node.id.toString(),
               position: {
-                x: 200 + Math.floor(Math.random() * 3) * 50,
-                y: i * 100 + 100,
+                x: 200 +  rn*60,
+                y: i*25 + 400,
               },
               data: {
                 label: node.id.toString(),
